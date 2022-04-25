@@ -207,11 +207,13 @@ const update = async(that) => {
 		}
 		that.battery
 			.getCharacteristic(Characteristic.BatteryLevel)
-				.updateValue(chargeLevel)
+				.updateValue(chargeLevel);
+		that.battery
 			.getCharacteristic(Characteristic.ChargingState)
-				.updateValue(chargingState)
+				.updateValue(chargingState);
+		that.battery
 			.getCharacteristic(Characteristic.StatusLowBattery)
-				.updateValue(lowBattery)
+				.updateValue(lowBattery);
 	}
 }
 
@@ -225,6 +227,7 @@ class SolarEdgeInverter {
 		if(this.current) {
 			this.currentPower = new Service.LightSensor("Current Power","Current Power");
 			this.currentWatts = this.config.currentWatts;
+		//	this.currentBattery = new Service.Battery("Current Battery", "Current Battery");
 		}
 
 		if(this.config.last_day) {
