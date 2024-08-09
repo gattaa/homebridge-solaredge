@@ -546,4 +546,4 @@ class SolarEdgeBattery {
 
 		return services
 	}
-}
+}}
