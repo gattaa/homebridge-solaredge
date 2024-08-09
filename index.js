@@ -4,7 +4,9 @@ const setupCache = require('axios-cache-adapter').setupCache;
 var Service, Characteristic;
 
 const DEF_MIN_LUX = 0,
-      DEF_MAX_LUX = 65535;
+      DEF_MAX_LUX = 65535,
+	  DEF_MIN_BATTERY = 0,
+	  DEF_MAX_BATTERY = 100;
 
 const DISPLAY_USAGE_SENSORS = 0;
 
@@ -15,6 +17,7 @@ module.exports = function(homebridge) {
     Service = homebridge.hap.Service;
     Characteristic = homebridge.hap.Characteristic;
     homebridge.registerAccessory(PLUGIN_NAME, ACCESSORY_NAME, SolarEdgeInverter);
+	homebridge.registerAccessory(PLUGIN_NAME, "SolarEdge Battery", SolarEdgeBattery);
 }
 
 /**
@@ -378,6 +381,167 @@ class SolarEdgeInverter {
 			this.battery.getCharacteristic(Characteristic.BatteryLevel)
 			this.battery.getCharacteristic(Characteristic.ChargingState)
 			this.battery.getCharacteristic(Characteristic.StatusLowBattery)
+						services.push(this.battery);
+		}
+
+		return services
+	}
+}
+
+// making a separate class for the battery, so i can use it for automations
+class SolarEdgeBattery {
+	constructor(log, config) {
+		this.log = log
+		this.config = config
+		this.current = this.config.current;
+
+		if(this.current) {
+			//this.currentPower = new Service.LightSensor("Current Power","Current Power");
+			//this.currentWatts = this.config.currentWatts;
+			//this.currentBattery = new Service.Battery("Current Battery", "Current Battery");
+		}
+
+		if(true) {
+			this.battery = new Service.LightSensor("Battery Level", "Battery Level")
+		}
+
+		this.name = "House Battery";
+		this.manufacturer = this.config.manufacturer || "SolarEdge";
+		this.model = this.config.model || "Inverter";
+		this.serial = this.config.serial || "solaredge-inverter-battery-1";
+		this.siteID = this.config.site_id;
+		this.apiKey = this.config.api_key;
+		this.update_interval = (this.config.update_interval || 15) * 60 * 1000;
+		this.debug = this.config.debug || false;
+		this.minLux = this.config.min_lux || DEF_MIN_LUX;
+		this.maxLux = this.config.max_lux || DEF_MAX_LUX;
+
+		if(this.battery) {
+			update(this);
+			setInterval ( async() => {
+				if(this.currentPower || this.lastDayPower || this.lastMonth || this.lastYear || this.lifeTime) {
+					const accessoryValue = await getAccessoryValue(this);
+					let power = 0;
+					if (accessoryValue) {
+						/*if(this.currentPower) {
+							if(parseFloat(accessoryValue.currentPower.power) > 0) {
+								if(this.currentWatts) {
+									power = Math.abs(Math.round((accessoryValue.currentPower.power + Number.EPSILON) *10) /10)
+								} else {
+									power = Math.abs(Math.round(((accessoryValue.currentPower.power / 1000) + Number.EPSILON) *10) /10)
+								}
+							}
+							this.currentPower
+								.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
+								.updateValue(power ? power : 0.0001)
+						}
+						if(this.lastDayPower) {
+							power = Math.abs(Math.round(((accessoryValue.lastDayData.energy / 1000) + Number.EPSILON) *10) /10)
+							this.lastDayPower
+								.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
+								.updateValue(power ? power : 0.0001)
+						}
+						if(this.lastMonth) {
+							power = Math.abs(Math.round(((accessoryValue.lastMonthData.energy / 1000) + Number.EPSILON) *10) /10)
+							this.lastMonth
+								.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
+								.updateValue(power ? power : 0.0001)
+						}
+						if(this.lastYear) {
+							power = Math.abs(Math.round(((accessoryValue.lastYearData.energy / 1000) + Number.EPSILON) *10) /10)
+							this.lastYear
+								.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
+								.updateValue(power ? power : 0.0001)
+						}
+						if(this.lifeTime) {
+							power = Math.abs(Math.round(((accessoryValue.lifeTimeData.energy / 1000) + Number.EPSILON) *10) /10)
+							this.lifeTime
+								.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
+								.updateValue(power ? power : 0.0001)
+						}*/
+					}
+				}
+				if(this.battery){
+					const batteryValues = await getBatteryValues(this);
+					let chargeLevel = 0;
+					let chargingState = 2;
+					let lowBattery = false;
+					if (!isEmptyObject(batteryValues)) {
+						chargeLevel = batteryValues.STORAGE.chargeLevel;
+						lowBattery = batteryValues.STORAGE.critical;
+						if (batteryValues.STORAGE.status == "Idle") {
+							chargingState = 0;
+						}
+						else {
+							batteryValues.connections.forEach(element => {
+								if (element.to == "STORAGE"){
+				//    		inProgress
+									chargingState = 1;
+								}
+								else {
+									chargingState = 0;
+								}
+							})
+						}
+					}
+					/*this.battery
+						.getCharacteristic(Characteristic.BatteryLevel)
+							.updateValue(chargeLevel)
+						.getCharacteristic(Characteristic.ChargingState)
+							.updateValue(chargingState)
+						.getCharacteristic(Characteristic.StatusLowBattery)
+							.updateValue(lowBattery)*/
+
+					this.battery.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
+						.updateValue(chargeLevel);
+					
+				}
+			}, this.update_interval)
+		}
+	}
+
+	getServices () {
+		const informationService = new Service.AccessoryInformation()
+			.setCharacteristic(Characteristic.Manufacturer, this.manufacturer)
+			.setCharacteristic(Characteristic.Model, this.model)
+			.setCharacteristic(Characteristic.SerialNumber, this.serial)
+
+		const services = [informationService]
+
+		/*if(this.current) {
+			this.currentPower.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
+			services.push(this.currentPower);
+		}
+
+		if(this.lastDayPower) {
+			this.lastDayPower.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
+			services.push(this.lastDayPower);
+		}
+
+		if(this.lastMonth) {
+			this.lastMonth.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
+			services.push(this.lastMonth);
+		}
+
+		if(this.lastYear) {
+			this.lastYear.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
+			services.push(this.lastYear);
+		}
+
+		if(this.lifeTime) {
+			this.lifeTime.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
+			services.push(this.lifeTime);
+		}*/
+
+		/*if(this.battery) {
+			this.battery.getCharacteristic(Characteristic.BatteryLevel)
+			this.battery.getCharacteristic(Characteristic.ChargingState)
+			this.battery.getCharacteristic(Characteristic.StatusLowBattery)
+						services.push(this.battery);
+		}*/
+
+		if(this.battery) {
+			this.battery.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
 						services.push(this.battery);
 		}
 
