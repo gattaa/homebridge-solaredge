@@ -11,14 +11,13 @@ const DEF_MIN_LUX = 0,
 const DISPLAY_USAGE_SENSORS = 0;
 
 const PLUGIN_NAME   = 'homebridge-solaredge-separate-battery';
-const ACCESSORY_NAME = 'SolarEdge Inverter';
+const ACCESSORY_NAME = 'SolarEdge Battery';
 
 module.exports = function(homebridge) {
     Service = homebridge.hap.Service;
     Characteristic = homebridge.hap.Characteristic;
-    homebridge.registerAccessory(PLUGIN_NAME, ACCESSORY_NAME, SolarEdgeInverter);
-	homebridge.registerAccessory(PLUGIN_NAME, "SolarEdge Battery", SolarEdgeBattery);
-}
+    homebridge.registerAccessory(PLUGIN_NAME, ACCESSORY_NAME, SolarEdgeBattery);
+	
 
 /**
  * Setup Cache For Axios to prevent additional requests
