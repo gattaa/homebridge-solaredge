@@ -13,7 +13,7 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "git://github.com/ecoen66/homebridge-solaredge-inverter.git"
+		"url": "git://github.com/gattaa/homebridge-solaredge-separate-battery.git"
 	},
 	"bugs": {
 		"url": "http://github.com/ecoen66/homebridge-solaredge-inverter/issues"

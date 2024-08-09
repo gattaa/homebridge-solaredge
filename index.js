@@ -175,7 +175,7 @@ const update = async(that) => {
 		that.battery
 			.getCharacteristic(Characteristic.StatusLowBattery)
 				.updateValue(lowBattery);*/
-		this.battery.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
+		that.battery.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
 				.updateValue(chargeLevel);
 	}
 }

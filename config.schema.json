@@ -1,5 +1,5 @@
 {
-	"pluginAlias": "SolarEdge Inverter",
+	"pluginAlias": "SolarEdge Separate Battery",
 	"pluginType": "accessory",
 	"schema": {
 		"type": "object",
@@ -8,7 +8,7 @@
 				"title": "Name",
 				"type": "string",
 				"required": true,
-				"default": "SolarEdge Inverter"
+				"default": "SolarEdge Battery"
 			},
 			"manufacturer": {
 				"title": "Manufacturer",
