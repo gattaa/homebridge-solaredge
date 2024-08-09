@@ -175,7 +175,7 @@ const update = async(that) => {
 		that.battery
 			.getCharacteristic(Characteristic.StatusLowBattery)
 				.updateValue(lowBattery);*/
-		that.battery.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
+		that.battery.getCharacteristic(Characteristic.BatteryLevel)
 				.updateValue(chargeLevel);
 	}
 }
@@ -235,7 +235,7 @@ class SolarEdgeBattery {
 						.getCharacteristic(Characteristic.StatusLowBattery)
 							.updateValue(lowBattery)*/
 
-					this.battery.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
+					this.battery.getCharacteristic(Characteristic.BatteryLevel)
 						.updateValue(chargeLevel);
 					
 				}
@@ -252,27 +252,27 @@ class SolarEdgeBattery {
 		const services = [informationService]
 
 		/*if(this.current) {
-			this.currentPower.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
+			this.currentPower.getCharacteristic(Characteristic.BatteryLevel)
 			services.push(this.currentPower);
 		}
 
 		if(this.lastDayPower) {
-			this.lastDayPower.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
+			this.lastDayPower.getCharacteristic(Characteristic.BatteryLevel)
 			services.push(this.lastDayPower);
 		}
 
 		if(this.lastMonth) {
-			this.lastMonth.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
+			this.lastMonth.getCharacteristic(Characteristic.BatteryLevel)
 			services.push(this.lastMonth);
 		}
 
 		if(this.lastYear) {
-			this.lastYear.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
+			this.lastYear.getCharacteristic(Characteristic.BatteryLevel)
 			services.push(this.lastYear);
 		}
 
 		if(this.lifeTime) {
-			this.lifeTime.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
+			this.lifeTime.getCharacteristic(Characteristic.BatteryLevel)
 			services.push(this.lifeTime);
 		}*/
 
@@ -284,7 +284,7 @@ class SolarEdgeBattery {
 		}*/
 
 		if(true) {
-			this.battery.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
+			this.battery.getCharacteristic(Characteristic.BatteryLevel)
 						services.push(this.battery);
 		}
 
