@@ -1,8 +1,8 @@
 {
-	"name": "homebridge-solaredge-inverter",
+	"name": "homebridge-solaredge-separate-battery",
 	"version": "0.2.7",
 	"description": "A Homebridge plugin to pull SolarEdge solar inverter data into HomeKit as light sensors.",
-	"author": "ecoen66",
+	"author": "gattaa",
 	"license": "MIT",
 	"main": "index.js",
 	"keywords": [

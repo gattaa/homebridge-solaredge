@@ -10,7 +10,7 @@ const DEF_MIN_LUX = 0,
 
 const DISPLAY_USAGE_SENSORS = 0;
 
-const PLUGIN_NAME   = 'homebridge-solaredge-inverter';
+const PLUGIN_NAME   = 'homebridge-solaredge-separate-battery';
 const ACCESSORY_NAME = 'SolarEdge Inverter';
 
 module.exports = function(homebridge) {
