@@ -69,7 +69,7 @@ const getInverterData = async(siteID, apiKey, update_interval) => {
  * @param (log) access to the homebridge logfile
  * @return {bool} the value for the accessory
  */
-const getAccessoryValue = async(that) => {
+/*const getAccessoryValue = async(that) => {
 	if (that.debug) {
 		that.log.info('Calling API');
 	}
@@ -93,7 +93,7 @@ const getAccessoryValue = async(that) => {
 	} else {
 		return null
 	}
-}
+}*/
 
 /**
  * API request with power flow data
@@ -143,49 +143,7 @@ const getBatteryValues = async (that) => {
 }
 
 const update = async(that) => {
-	/*if(that.currentPower || that.lastDayPower || that.lastMonth || that.lastYear || that.lifeTime) {
-		const accessoryValue = await getAccessoryValue(that);
-		let power = 0;
-		if (accessoryValue) {
-			if(that.currentPower) {
-				if(parseFloat(accessoryValue.currentPower.power) > 0) {
-					if(that.currentWatts) {
-						power = Math.abs(Math.round((accessoryValue.currentPower.power + Number.EPSILON) *10) /10)
-					} else {
-						power = Math.abs(Math.round(((accessoryValue.currentPower.power / 1000) + Number.EPSILON) *10) /10)
-					}
-				}
-				that.currentPower
-					.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
-					.updateValue(power ? power : 0.0001)
-			}
-			if(that.lastDayPower) {
-				power = Math.abs(Math.round(((accessoryValue.lastDayData.energy / 1000) + Number.EPSILON) *10) /10)
-				that.lastDayPower
-					.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
-					.updateValue(power ? power : 0.0001)
-			}
-			if(that.lastMonth) {
-				power = Math.abs(Math.round(((accessoryValue.lastMonthData.energy / 1000) + Number.EPSILON) *10) /10)
-				that.lastMonth
-					.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
-					.updateValue(power ? power : 0.0001)
-			}
-			if(that.lastYear) {
-				power = Math.abs(Math.round(((accessoryValue.lastYearData.energy / 1000) + Number.EPSILON) *10) /10)
-				that.lastYear
-					.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
-					.updateValue(power ? power : 0.0001)
-			}
-			if(that.lifeTime) {
-				power = Math.abs(Math.round(((accessoryValue.lifeTimeData.energy / 1000) + Number.EPSILON) *10) /10)
-				that.lifeTime
-					.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
-					.updateValue(power ? power : 0.0001)
-			}
-		}
-	}*/
-	if(that.battery){
+	if(true){
 		const batteryValues = await getBatteryValues(that);
 		let chargeLevel = 0;
 		let chargingState = 2;
@@ -230,15 +188,8 @@ class SolarEdgeBattery {
 		this.current = this.config.current;
 
 		if(this.current) {
-			//this.currentPower = new Service.LightSensor("Current Power","Current Power");
-			//this.currentWatts = this.config.currentWatts;
-			//this.currentBattery = new Service.Battery("Current Battery", "Current Battery");
-		}
-
-		if(true) {
 			this.battery = new Service.LightSensor("Battery Level", "Battery Level")
 		}
-
 		this.name = "House Battery";
 		this.manufacturer = this.config.manufacturer || "SolarEdge";
 		this.model = this.config.model || "Inverter";
@@ -250,52 +201,10 @@ class SolarEdgeBattery {
 		this.minLux = this.config.min_lux || DEF_MIN_LUX;
 		this.maxLux = this.config.max_lux || DEF_MAX_LUX;
 
-		if(this.battery) {
+		if(true) {
 			update(this);
 			setInterval ( async() => {
-				if(this.currentPower || this.lastDayPower || this.lastMonth || this.lastYear || this.lifeTime) {
-					const accessoryValue = await getAccessoryValue(this);
-					let power = 0;
-					if (accessoryValue) {
-						/*if(this.currentPower) {
-							if(parseFloat(accessoryValue.currentPower.power) > 0) {
-								if(this.currentWatts) {
-									power = Math.abs(Math.round((accessoryValue.currentPower.power + Number.EPSILON) *10) /10)
-								} else {
-									power = Math.abs(Math.round(((accessoryValue.currentPower.power / 1000) + Number.EPSILON) *10) /10)
-								}
-							}
-							this.currentPower
-								.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
-								.updateValue(power ? power : 0.0001)
-						}
-						if(this.lastDayPower) {
-							power = Math.abs(Math.round(((accessoryValue.lastDayData.energy / 1000) + Number.EPSILON) *10) /10)
-							this.lastDayPower
-								.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
-								.updateValue(power ? power : 0.0001)
-						}
-						if(this.lastMonth) {
-							power = Math.abs(Math.round(((accessoryValue.lastMonthData.energy / 1000) + Number.EPSILON) *10) /10)
-							this.lastMonth
-								.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
-								.updateValue(power ? power : 0.0001)
-						}
-						if(this.lastYear) {
-							power = Math.abs(Math.round(((accessoryValue.lastYearData.energy / 1000) + Number.EPSILON) *10) /10)
-							this.lastYear
-								.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
-								.updateValue(power ? power : 0.0001)
-						}
-						if(this.lifeTime) {
-							power = Math.abs(Math.round(((accessoryValue.lifeTimeData.energy / 1000) + Number.EPSILON) *10) /10)
-							this.lifeTime
-								.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
-								.updateValue(power ? power : 0.0001)
-						}*/
-					}
-				}
-				if(this.battery){
+				if(true){
 					const batteryValues = await getBatteryValues(this);
 					let chargeLevel = 0;
 					let chargingState = 2;
@@ -374,7 +283,7 @@ class SolarEdgeBattery {
 						services.push(this.battery);
 		}*/
 
-		if(this.battery) {
+		if(true) {
 			this.battery.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
 						services.push(this.battery);
 		}
