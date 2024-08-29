@@ -236,7 +236,7 @@ class SolarEdgeBattery {
 							.updateValue(lowBattery)*/
 
 					this.battery.getCharacteristic(Characteristic.BatteryLevel)
-						.updateValue(chargeLevel);
+						.updateValue(chargeLevel != 0 ? chargeLevel : 0.001);
 					
 				}
 			}, this.update_interval)
